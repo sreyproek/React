@@ -8,6 +8,8 @@ export default function FloatingButton() {
   const [creator, setCreator] = useState("");
   const [fileList, setFileList] = useState([]);
   const [selectedFileIndex, setSelectedFileIndex] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchBy, setSearchBy] = useState("filename");
 
   const handleClick = () => {
     setisPopUp(true);
@@ -55,7 +57,7 @@ export default function FloatingButton() {
     const updatedFileList = [...fileList];
     updatedFileList.splice(index, +1);
     setFileList(updatedFileList);
-  }; 
+  };
 
   const handleEdit = (index) => {
     setisPopUp(true);
@@ -65,18 +67,45 @@ export default function FloatingButton() {
     setFileImage(fileImage);
     setCreator(creator);
   };
+  // Function to handle search
+  const handleSearch = (e) => {
+    setSearchTerm(e.target.value);
+  };
+  // Function to handle selecting search by option
+  const handleSearchByChange = (e) => {
+    setSearchBy(e.target.value);
+  };
+  // Filter file list based on search term and search by option
+  const filteredFiles = fileList.filter((file) => {
+    if (searchBy === "filename") {
+      return file.filename.toLowerCase().includes(searchTerm.toLowerCase());
+    } else if (searchBy === "creator") {
+      return file.creator.toLowerCase().includes(searchTerm.toLowerCase());
+    }
+    return true;
+  });
 
   return (
     <>
       <div className="container">
-        <div className="container-row">
-          <img
-            className="ImageChrome"
-            src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/Google_Chrome_icon_%28February_2022%29.svg/640px-Google_Chrome_icon_%28February_2022%29.svg.png"
-            alt="chromPicture"
-          />
-          <h3 className="ChromeDownload">ChromeDownload</h3>
-          <input className="container-search" placeholder="Search your files" />
+        <div className="navbar">
+          <div className="container-row">
+            <div className="card">
+              <img
+                className="ImageChrome"
+                src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/Google_Chrome_icon_%28February_2022%29.svg/640px-Google_Chrome_icon_%28February_2022%29.svg.png"
+                alt="chromPicture"
+              />
+              <h3 className="ChromeDownload">ChromeDownload</h3>
+              <input
+                className="container-search"
+                placeholder="Search your files"
+              />
+            </div>
+          </div>
+          <h4 className="manageFile">
+            Your <a href="#">_profile is manage_</a>by sabaicode.com
+          </h4>
         </div>
       </div>
       <div className="floating-button" onClick={handleClick}>
@@ -125,17 +154,27 @@ export default function FloatingButton() {
           </form>
         </div>
       )}
-
-      <div className="file-list">
-        <br />
-        {/* <h3 className="classfile-list">File List</h3> */}
-        {fileList.map((file, index) => ( 
-          <li className="Update-list" key={index}>
-            <strong>{file.filename}</strong> - {file.creator} 
-            <button className="edit" onClick={() => handleEdit(index)}>Edit</button>
-            <button className="remove" onClick={() => handleRemove(index)}>Remove</button> 
-          </li>
-        ))}
+      <div className="container-box">
+        <div className="file-list">
+          <br />
+          {/* <h3 className="classfile-list">File List</h3> */}
+          {fileList.map((file, index) => (
+            <ul className="Update-list" key={index}>
+              <img
+                className="Image-box"
+                src={URL.createObjectURL(file.fileImage)}
+                alt={file.filename}
+              />
+              <strong>{file.filename}</strong> - {file.creator}
+              <button className="edit" onClick={() => handleEdit(index)}>
+                Edit
+              </button>
+              <button className="remove" onClick={() => handleRemove(index)}>
+                Remove
+              </button>
+            </ul>
+          ))}
+        </div>
       </div>
     </>
   );
